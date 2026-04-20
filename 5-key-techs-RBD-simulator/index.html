@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RBD 5 Key Technologies Simulator</title>
+  <script type="module" crossorigin src="/ML_Wireless_Testbed/5-key-techs-RBD-simulator/assets/index-CPtUgPdX.js"></script>
+  <link rel="stylesheet" crossorigin href="/ML_Wireless_Testbed/5-key-techs-RBD-simulator/assets/index-O_-UnV9t.css">
+</head>
+<body>
+  <header>
+    <div class="header-inner">
+      <div class="header-title">
+        <span class="badge">RBD</span>
+        <h1>5 Key Technologies Simulator</h1>
+        <p class="subtitle">Resilience-by-Design · P1 Reliability · P2 Awareness · P3 Reconfiguration · QoS Objective</p>
+      </div>
+      <div class="header-meta">
+        <span>Satellite · UAV BS · Active RIS · 5G NR BS · MEC</span>
+      </div>
+    </div>
+  </header>
+
+  <nav class="tab-nav">
+    <button class="tab-btn active" data-tab="reliability">P1 Reliability</button>
+    <button class="tab-btn" data-tab="awareness">P2 Awareness</button>
+    <button class="tab-btn" data-tab="reconfiguration">P3 Reconfiguration</button>
+    <button class="tab-btn" data-tab="qos">QoS Monitor</button>
+    <button class="tab-btn" data-tab="objective">Objective (SRI)</button>
+  </nav>
+
+  <main>
+    <!-- ===== P1 RELIABILITY ===== -->
+    <section id="tab-reliability" class="tab-section active">
+      <div class="section-header">
+        <h2>P1 — Protective Design: System Reliability</h2>
+        <p>k-out-of-n binomial reliability model for each technology over 1 year (8760 hours)</p>
+      </div>
+      <div class="two-col">
+        <div class="card controls-card">
+          <h3>Parameters</h3>
+          <div class="param-group">
+            <label>Time Horizon: <span id="p1-horizon-val">8760</span> hours</label>
+            <input type="range" id="p1-horizon" min="720" max="8760" step="360" value="8760" />
+          </div>
+          <div class="param-group">
+            <label>View Mode</label>
+            <div class="radio-group">
+              <label><input type="radio" name="p1-mode" value="component" checked /> Individual R<sub>i</sub>(t)</label>
+              <label><input type="radio" name="p1-mode" value="system" /> System R<sub>sys,i</sub>(t)</label>
+              <label><input type="radio" name="p1-mode" value="both" /> Both</label>
+            </div>
+          </div>
+          <div class="tech-table">
+            <table>
+              <thead><tr><th>Technology</th><th>λ (1/hr)</th><th>n</th><th>k</th><th>R<sub>min</sub></th></tr></thead>
+              <tbody>
+                <tr><td><span class="dot sat"></span>Satellite</td><td>0.0001</td><td>3</td><td>2</td><td>0.30</td></tr>
+                <tr><td><span class="dot uav"></span>UAV BS</td><td>0.0005</td><td>10</td><td>7</td><td>0.50</td></tr>
+                <tr><td><span class="dot ris"></span>Active RIS</td><td>0.0002</td><td>15</td><td>10</td><td>0.40</td></tr>
+                <tr><td><span class="dot nr"></span>5G NR BS</td><td>0.0003</td><td>5</td><td>3</td><td>0.70</td></tr>
+                <tr><td><span class="dot mec"></span>MEC Server</td><td>0.0002</td><td>4</td><td>3</td><td>0.65</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="metric-row" id="p1-metrics"></div>
+        </div>
+        <div class="card chart-card">
+          <h3>Reliability Over Time</h3>
+          <canvas id="p1-chart" width="600" height="380"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== P2 AWARENESS ===== -->
+    <section id="tab-awareness" class="tab-section">
+      <div class="section-header">
+        <h2>P2 — Self-Awareness: Anomaly Detection &amp; SAI</h2>
+        <p>Monitoring anomaly scores against thresholds; System-Wide Awareness Index SAI(t)</p>
+      </div>
+      <div class="two-col">
+        <div class="card controls-card">
+          <h3>Controls</h3>
+          <div class="param-group">
+            <label>Random Seed: <span id="p2-seed-val">42</span></label>
+            <input type="range" id="p2-seed" min="1" max="200" step="1" value="42" />
+          </div>
+          <div class="param-group">
+            <label>Noise Amplitude: <span id="p2-noise-val">0.25</span></label>
+            <input type="range" id="p2-noise" min="0.05" max="0.60" step="0.01" value="0.25" />
+          </div>
+          <div class="param-group">
+            <label>SAI Min Floor: <span id="p2-saimin-val">0.60</span></label>
+            <input type="range" id="p2-saimin" min="0.30" max="0.90" step="0.05" value="0.60" />
+          </div>
+          <div class="tech-table">
+            <table>
+              <thead><tr><th>Technology</th><th>θ (threshold)</th><th>w (SAI weight)</th></tr></thead>
+              <tbody>
+                <tr><td><span class="dot sat"></span>Satellite</td><td>0.80</td><td>0.30</td></tr>
+                <tr><td><span class="dot uav"></span>UAV BS</td><td>0.60</td><td>0.20</td></tr>
+                <tr><td><span class="dot ris"></span>Active RIS</td><td>0.70</td><td>0.15</td></tr>
+                <tr><td><span class="dot nr"></span>5G NR BS</td><td>0.75</td><td>0.25</td></tr>
+                <tr><td><span class="dot mec"></span>MEC Server</td><td>0.65</td><td>0.10</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="metric-row" id="p2-metrics"></div>
+        </div>
+        <div class="card chart-card">
+          <h3>Anomaly Scores &amp; SAI(t)</h3>
+          <canvas id="p2-chart" width="600" height="380"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== P3 RECONFIGURATION ===== -->
+    <section id="tab-reconfiguration" class="tab-section">
+      <div class="section-header">
+        <h2>P3 — Reconfiguration: Resilience Recovery</h2>
+        <p>Reliability boost when R<sub>sys,i</sub>(t) drops below R<sub>min,i</sub>; System Resilience Index (SRI) without QoS penalty</p>
+      </div>
+      <div class="two-col">
+        <div class="card controls-card">
+          <h3>Controls</h3>
+          <div class="param-group">
+            <label>Reconfiguration Trigger Threshold: <span id="p3-trigger-val">R<sub>min,i</sub></span></label>
+            <div class="info-note">Each tech triggers independently at its own R<sub>min</sub></div>
+          </div>
+          <div class="param-group">
+            <label>Show Component</label>
+            <select id="p3-tech-select">
+              <option value="all">All Technologies (SRI)</option>
+              <option value="0">Satellite</option>
+              <option value="1">UAV BS</option>
+              <option value="2">Active RIS</option>
+              <option value="3">5G NR BS</option>
+              <option value="4">MEC Server</option>
+            </select>
+          </div>
+          <div class="tech-table">
+            <table>
+              <thead><tr><th>Technology</th><th>γ (gain)</th><th>w (SRI weight)</th></tr></thead>
+              <tbody>
+                <tr><td><span class="dot sat"></span>Satellite</td><td>0.40</td><td>0.30</td></tr>
+                <tr><td><span class="dot uav"></span>UAV BS</td><td>0.55</td><td>0.20</td></tr>
+                <tr><td><span class="dot ris"></span>Active RIS</td><td>0.50</td><td>0.15</td></tr>
+                <tr><td><span class="dot nr"></span>5G NR BS</td><td>0.60</td><td>0.25</td></tr>
+                <tr><td><span class="dot mec"></span>MEC Server</td><td>0.65</td><td>0.10</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="metric-row" id="p3-metrics"></div>
+        </div>
+        <div class="card chart-card">
+          <h3>Reliability with Reconfiguration</h3>
+          <canvas id="p3-chart" width="600" height="380"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== QoS MONITOR ===== -->
+    <section id="tab-qos" class="tab-section">
+      <div class="section-header">
+        <h2>QoS Monitor — Constraint Enforcement</h2>
+        <p>Per-technology QoS floor compliance over time; violation magnitude V<sub>i</sub>(t)</p>
+      </div>
+      <div class="two-col">
+        <div class="card controls-card">
+          <h3>QoS Floors</h3>
+          <div class="tech-table">
+            <table>
+              <thead><tr><th>Technology</th><th>TP<sub>min</sub> (Mbps)</th><th>L<sub>max</sub> (ms)</th><th>A<sub>min</sub></th><th>R<sub>min</sub></th></tr></thead>
+              <tbody>
+                <tr><td><span class="dot sat"></span>Satellite</td><td>50</td><td>600</td><td>0.990</td><td>0.30</td></tr>
+                <tr><td><span class="dot uav"></span>UAV BS</td><td>200</td><td>50</td><td>0.950</td><td>0.50</td></tr>
+                <tr><td><span class="dot ris"></span>Active RIS</td><td>150</td><td>20</td><td>0.920</td><td>0.40</td></tr>
+                <tr><td><span class="dot nr"></span>5G NR BS</td><td>1000</td><td>10</td><td>0.999</td><td>0.70</td></tr>
+                <tr><td><span class="dot mec"></span>MEC Server</td><td>500</td><td>5</td><td>0.995</td><td>0.65</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="param-group" style="margin-top:16px">
+            <label>Latency Noise: <span id="qos-lnoise-val">0.15</span></label>
+            <input type="range" id="qos-lnoise" min="0.0" max="0.5" step="0.01" value="0.15" />
+          </div>
+          <div id="qos-status-cards" class="qos-status-grid"></div>
+        </div>
+        <div class="card chart-card">
+          <h3>Violation Magnitude V<sub>i</sub>(t)</h3>
+          <canvas id="qos-chart" width="600" height="380"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== OBJECTIVE / SRI ===== -->
+    <section id="tab-objective" class="tab-section">
+      <div class="section-header">
+        <h2>Objective — System Resilience Index (SRI)</h2>
+        <p>SRI(t) = Σ w<sub>i</sub> · S<sub>p,i</sub>(t) and SRI<sub>eff</sub>(t) with QoS violation penalty</p>
+      </div>
+      <div class="two-col">
+        <div class="card controls-card">
+          <h3>Serviceability Weights α, β</h3>
+          <div class="param-group">
+            <label>α (reliability weight): <span id="obj-alpha-val">0.40</span></label>
+            <input type="range" id="obj-alpha" min="0.1" max="0.6" step="0.05" value="0.40" />
+          </div>
+          <div class="param-group">
+            <label>β (availability weight): <span id="obj-beta-val">0.40</span></label>
+            <input type="range" id="obj-beta" min="0.1" max="0.6" step="0.05" value="0.40" />
+          </div>
+          <div class="param-group">
+            <label>1 − α − β (performability): <span id="obj-perf-val">0.20</span></label>
+            <input type="range" id="obj-perf" min="0.0" max="0.5" step="0.05" value="0.20" disabled />
+          </div>
+          <h3 style="margin-top:16px">Technology Weights w<sub>i</sub></h3>
+          <div class="param-group">
+            <label>Satellite w: <span id="obj-w0-val">0.30</span></label>
+            <input type="range" id="obj-w0" min="0.05" max="0.50" step="0.05" value="0.30" />
+          </div>
+          <div class="param-group">
+            <label>UAV BS w: <span id="obj-w1-val">0.20</span></label>
+            <input type="range" id="obj-w1" min="0.05" max="0.50" step="0.05" value="0.20" />
+          </div>
+          <div class="param-group">
+            <label>Active RIS w: <span id="obj-w2-val">0.15</span></label>
+            <input type="range" id="obj-w2" min="0.05" max="0.50" step="0.05" value="0.15" />
+          </div>
+          <div class="param-group">
+            <label>5G NR BS w: <span id="obj-w3-val">0.25</span></label>
+            <input type="range" id="obj-w3" min="0.05" max="0.50" step="0.05" value="0.25" />
+          </div>
+          <div class="param-group">
+            <label>MEC Server w: <span id="obj-w4-val">0.10</span></label>
+            <input type="range" id="obj-w4" min="0.05" max="0.50" step="0.05" value="0.10" />
+          </div>
+          <div id="weight-sum-note" class="weight-sum-ok">Weights sum: 1.00</div>
+          <div class="metric-row" id="obj-metrics"></div>
+        </div>
+        <div class="card chart-card">
+          <h3>SRI(t) vs SRI<sub>eff</sub>(t) &amp; Per-Tech S<sub>p,i</sub></h3>
+          <canvas id="obj-chart" width="600" height="420"></canvas>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>RBD 5 Key Technologies Simulator · Based on Khaloopour et al., IEEE Access 2024 · Resilience-by-Design Framework</p>
+  </footer>
+
+</body>
+</html>
