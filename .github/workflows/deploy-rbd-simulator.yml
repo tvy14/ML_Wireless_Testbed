@@ -1,8 +1,10 @@
-name: Deploy to GitHub Pages
+name: Deploy RBD Simulator to GitHub Pages
 
 on:
   push:
     branches: [main]
+    paths:
+      - '5-key-techs-RBD-simulator/**'
   workflow_dispatch:
 
 permissions:
@@ -18,17 +20,20 @@ jobs:
         with:
           node-version: 20
           cache: npm
+          cache-dependency-path: 5-key-techs-RBD-simulator/package-lock.json
 
       - name: Install dependencies
         run: npm ci
+        working-directory: 5-key-techs-RBD-simulator
 
       - name: Build
         run: npm run build
+        working-directory: 5-key-techs-RBD-simulator
 
       - name: Deploy to gh-pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist
+          publish_dir: ./5-key-techs-RBD-simulator/dist
           destination_dir: 5-key-techs-RBD-simulator
           keep_files: true
